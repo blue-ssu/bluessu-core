@@ -8,4 +8,11 @@ export class Credit extends BaseEntity {
 
   @Column()
   role: string;
+
+  static create(name: string, role: string) {
+    const credit = new Credit();
+    credit.name = name;
+    credit.role = role;
+    return credit;
+  }
 }

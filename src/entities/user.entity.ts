@@ -14,14 +14,18 @@ export class User extends BaseEntity {
   profileImage: string;
 
   @OneToMany(() => ProjectMember, (projectMember) => projectMember.user)
-  @JoinColumn({ name: 'project_members' })
   projectMembers: ProjectMember[];
 
   @OneToMany(() => ProjectUser, (projectUser) => projectUser.user)
-  @JoinColumn({ name: 'project_users' })
   projectUsers: Project[];
 
   @OneToMany(() => UserPermission, (userPermission) => userPermission.user)
-  @JoinColumn({ name: 'permissions' })
   permissions: UserPermission[];
+
+  static create(data: { name: string; profileImage: string }) {
+    const entity = new User();
+    entity.name = data.name;
+    entity.profileImage = data.profileImage;
+    return entity;
+  }
 }

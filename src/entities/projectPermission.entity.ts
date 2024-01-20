@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { Project } from './project.entity';
 
@@ -7,4 +7,7 @@ export class ProjectPermission extends BaseEntity {
   @ManyToOne(() => Project, (project) => project.permissions)
   @JoinColumn({ name: 'project_id' })
   project: Project;
+
+  @Column({ name: 'permission_name' })
+  permissionName: string;
 }

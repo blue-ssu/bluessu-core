@@ -18,10 +18,10 @@ export class Project extends BaseEntity {
   @Column({ name: 'icon_url' })
   iconURL: string;
 
-  @Column({ name: 'terms_url' })
+  @Column({ name: 'terms_url', nullable: true })
   termsURL: string;
 
-  @Column({ name: 'privacy_url' })
+  @Column({ name: 'privacy_url', nullable: true })
   privacyURL: string;
 
   @Column({ name: 'client_id' })
@@ -34,14 +34,25 @@ export class Project extends BaseEntity {
   redirectURLs: string;
 
   @OneToMany(() => ProjectMember, (projectMember) => projectMember.project)
-  @JoinColumn({ name: 'project_members' })
   projectMembers: ProjectMember[];
 
   @OneToMany(() => ProjectUser, (projectUser) => projectUser.project)
-  @JoinColumn({ name: 'project_users' })
   projectUsers: ProjectUser[];
 
   @OneToMany(() => ProjectPermission, (permission) => permission.project)
-  @JoinColumn({ name: 'permissions' })
   permissions: ProjectPermission[];
+
+  static create(data: {
+    name: string;
+    description: string;
+    uri: string;
+    iconURL: string;
+  }) {
+    const entity = new Project();
+    entity.name = data.name;
+    entity.description = data.description;
+    entity.uri = data.uri;
+    entity.iconURL = data.iconURL;
+    return entity;
+  }
 }

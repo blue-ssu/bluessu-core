@@ -12,4 +12,11 @@ export class ProjectUser extends BaseEntity {
   @ManyToOne(() => User, (user) => user.projectUsers)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  static create(data: { project: Project; user: User }) {
+    const entity = new ProjectUser();
+    entity.project = data.project;
+    entity.user = data.user;
+    return entity;
+  }
 }
