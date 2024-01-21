@@ -1,12 +1,22 @@
-import { Entity, ManyToOne } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { User } from './user.entity';
 import { Project } from './project.entity';
+import { BaseEntity } from './base.entity';
 
 @Entity('project_user')
-export class ProjectUser {
+export class ProjectUser extends BaseEntity {
   @ManyToOne(() => Project, (project) => project.projectUsers)
+  @JoinColumn({ name: 'project_id' })
   project: Project;
 
   @ManyToOne(() => User, (user) => user.projectUsers)
+  @JoinColumn({ name: 'user_id' })
   user: User;
+
+  static create(data: { project: Project; user: User }) {
+    const entity = new ProjectUser();
+    entity.project = data.project;
+    entity.user = data.user;
+    return entity;
+  }
 }
