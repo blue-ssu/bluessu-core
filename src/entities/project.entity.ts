@@ -1,8 +1,7 @@
-import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { ProjectMember } from './projectMember.entity';
 import { ProjectUser } from './projectUser.entity';
-import { ProjectPermission } from './projectPermission.entity';
 
 @Entity('project')
 export class Project extends BaseEntity {
@@ -14,6 +13,13 @@ export class Project extends BaseEntity {
 
   @Column()
   uri: string;
+
+  @Column({ name: 'role_list', default: 'Project' })
+  roleList: string;
+
+  get roles() {
+    return this.roleList.split(',').map((role) => role.trim());
+  }
 
   @Column({ name: 'icon_url' })
   iconURL: string;
@@ -38,9 +44,6 @@ export class Project extends BaseEntity {
 
   @OneToMany(() => ProjectUser, (projectUser) => projectUser.project)
   projectUsers: ProjectUser[];
-
-  @OneToMany(() => ProjectPermission, (permission) => permission.project)
-  permissions: ProjectPermission[];
 
   static create(data: {
     name: string;

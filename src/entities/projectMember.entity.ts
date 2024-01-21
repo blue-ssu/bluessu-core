@@ -1,8 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseEntity } from './base.entity';
 import { Project } from './project.entity';
 import { User } from './user.entity';
-import { ProjectMemberPermission } from './projectMemberPermission.entity';
 
 @Entity('project_member')
 export class ProjectMember extends BaseEntity {
@@ -15,19 +14,13 @@ export class ProjectMember extends BaseEntity {
   user: User;
 
   @Column({ name: 'is_leader', default: false, type: 'boolean' })
-  isLeader: boolean;
+  isOwner: boolean;
 
-  @OneToMany(
-    () => ProjectMemberPermission,
-    (permission) => permission.projectMember,
-  )
-  permissions: ProjectMemberPermission[];
-
-  static create(data: { project: Project; user: User; isLeader: boolean }) {
+  static create(data: { project: Project; user: User; isOwner: boolean }) {
     const entity = new ProjectMember();
     entity.project = data.project;
     entity.user = data.user;
-    entity.isLeader = data.isLeader;
+    entity.isOwner = data.isOwner;
     return entity;
   }
 }
