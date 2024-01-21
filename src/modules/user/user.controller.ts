@@ -53,6 +53,7 @@ export class UserController {
     return await this.userService.create({
       name: dto.name,
       studentId: dto.studentId,
+      department: dto.department,
       profileImage: dto.profileImage,
     });
   }

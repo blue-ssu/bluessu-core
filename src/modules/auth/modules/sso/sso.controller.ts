@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { SsoService } from './sso.service';
 import { SsoLoginReqDto } from './dto/SsoLogin.req.dto';
 
-@Controller('auth/sso')
+@Controller('/auth/sso')
 export class SsoController {
   constructor(private readonly ssoService: SsoService) {}
 

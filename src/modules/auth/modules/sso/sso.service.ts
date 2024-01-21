@@ -33,7 +33,7 @@ export class SsoService {
       user = await this.userService.create({
         studentId: ssoUser.studentId,
         name: ssoUser.name,
-        profileImage: 'https://example.com',
+        department: ssoUser.department,
       });
     }
 
@@ -77,9 +77,28 @@ export class SsoService {
     const studentId = (res.data as string).match(/"LogonUid":"(\d+)"/)?.[1];
     const name = (res.data as string).match(/"LastName":"([^"]+)"/)?.[1];
 
+    const departmentRes = await axios.get(
+      'https://saint.ssu.ac.kr/webSSUMain/main_student.jsp',
+      {
+        headers: {
+          connection: 'keep-alive',
+          Cookie: getCookieString(cookies),
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.46',
+        },
+        responseType: 'text',
+        withCredentials: true,
+      },
+    );
+
+    const department = (departmentRes.data as string).match(
+      /<dt>소속<\/dt>\s*<dd>\s*<a[^>]*>\s*<strong>([^<]+)<\/strong>/,
+    )?.[1];
+
     return {
       studentId,
       name,
+      department,
     };
   }
 }

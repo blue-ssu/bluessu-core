@@ -14,11 +14,13 @@ export class UserService {
   async create(data: {
     name: string;
     studentId: string;
+    department: string;
     profileImage?: string;
   }): Promise<User> {
     const user = User.create({
       name: data.name,
       studentId: data.studentId,
+      department: data.department,
       profileImage: data.profileImage,
     });
     return await this.userRepository.save(user);

@@ -9,6 +9,9 @@ export class CreateUserReqDto {
   studentId: string;
 
   @IsString()
+  department: string;
+
+  @IsString()
   @IsOptional()
   profileImage: string;
 }
