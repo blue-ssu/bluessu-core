@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class UpdateProjectReqDto {
   @IsString()
@@ -26,7 +26,7 @@ export class UpdateProjectReqDto {
   @IsUrl()
   privacyURL: string;
 
-  @IsString()
+  @IsArray()
   @IsOptional()
-  redirectURLs: string;
+  redirectURLs: string[];
 }

@@ -26,6 +26,8 @@ export class ProjectService {
     description: string;
     url: string;
     iconURL: string;
+    privacyURL: string;
+    termsURL: string;
     ownerUserId: number;
   }): Promise<Project> {
     const user = await this.userRepository.findOne({
@@ -37,6 +39,8 @@ export class ProjectService {
       description: data.description,
       url: data.url,
       iconURL: data.iconURL,
+      privacyURL: data.privacyURL,
+      termsURL: data.termsURL,
     });
     project = await this.projectRepository.save(project);
 
@@ -74,6 +78,7 @@ export class ProjectService {
       iconURL?: string;
       termsURL?: string;
       privacyURL?: string;
+      redirectURLs?: string[];
     },
   ): Promise<Project> {
     const project = await this.projectRepository.findOne({ where: { id } });
@@ -91,6 +96,7 @@ export class ProjectService {
         iconURL: data.iconURL || project.iconURL,
         termsURL: data.termsURL || project.termsURL,
         privacyURL: data.privacyURL || project.privacyURL,
+        redirectURLList: data.redirectURLs.join(',') || project.redirectURLList,
       },
     );
     return this.findOne(project.id);

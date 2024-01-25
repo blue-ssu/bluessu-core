@@ -13,6 +13,7 @@ import { ClientType } from 'src/types/ClientType';
 import { InvalidClientType } from 'src/errors/InvalidClientType';
 import { CreateProjectReqDto } from './dto/CreateProject.req.dto';
 import { ProjectObject } from 'src/objects/project.object';
+import { UpdateProjectReqDto } from './dto/UpdateProject.req.dto';
 
 @Controller('projects')
 export class ProjectController {
@@ -54,6 +55,8 @@ export class ProjectController {
       description: dto.description,
       url: dto.url,
       iconURL: dto.iconURL,
+      privacyURL: dto.privacyURL,
+      termsURL: dto.termsURL,
       ownerUserId: client.user.id,
     });
     return {
@@ -66,7 +69,7 @@ export class ProjectController {
   async updateProject(
     @Param('projectId') projectId: string,
     @Client() client: ClientType,
-    @Body() dto: CreateProjectReqDto,
+    @Body() dto: UpdateProjectReqDto,
   ) {
     if (client.type !== 'user') {
       throw new InvalidClientType();
@@ -81,6 +84,9 @@ export class ProjectController {
       description: dto.description,
       url: dto.url,
       iconURL: dto.iconURL,
+      privacyURL: dto.privacyURL,
+      termsURL: dto.termsURL,
+      redirectURLs: dto.redirectURLs,
     });
     return {
       project: ProjectObject.from(project),

@@ -40,8 +40,12 @@ export class Project extends BaseEntity {
   @Column({ name: 'client_secret', nullable: true })
   clientSecret: string;
 
-  @Column({ name: 'redirect_urls', nullable: true })
-  redirectURLs: string;
+  @Column({ name: 'redirect_url_list', nullable: true })
+  redirectURLList: string;
+
+  get redirectURLs() {
+    return this.redirectURLList.split(',').map((url) => url.trim());
+  }
 
   @OneToMany(() => ProjectMember, (projectMember) => projectMember.project)
   projectMembers: ProjectMember[];
@@ -54,12 +58,16 @@ export class Project extends BaseEntity {
     description: string;
     url: string;
     iconURL: string;
+    termsURL?: string;
+    privacyURL?: string;
   }) {
     const entity = new Project();
     entity.name = data.name;
     entity.description = data.description;
     entity.url = data.url;
     entity.iconURL = data.iconURL;
+    entity.termsURL = data.termsURL;
+    entity.privacyURL = data.privacyURL;
     return entity;
   }
 }
