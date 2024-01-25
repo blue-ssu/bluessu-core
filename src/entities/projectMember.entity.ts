@@ -13,14 +13,18 @@ export class ProjectMember extends BaseEntity {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ name: 'is_leader', default: false, type: 'boolean' })
-  isOwner: boolean;
+  @Column({ name: 'role', default: 'Member' })
+  role: string;
 
-  static create(data: { project: Project; user: User; isOwner: boolean }) {
+  static create(data: {
+    project: Project;
+    user: User;
+    role: 'Member' | 'Owner';
+  }) {
     const entity = new ProjectMember();
     entity.project = data.project;
     entity.user = data.user;
-    entity.isOwner = data.isOwner;
+    entity.role = data.role;
     return entity;
   }
 }

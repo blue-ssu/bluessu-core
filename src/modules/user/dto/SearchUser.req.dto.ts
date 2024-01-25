@@ -9,8 +9,4 @@ export class SearchUserReqDto {
   @IsOptional()
   @IsString()
   studentId: string;
-
-  @IsString()
-  @IsOptional()
-  profileImage: string;
 }
