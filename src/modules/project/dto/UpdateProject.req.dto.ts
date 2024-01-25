@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsArray, IsIn, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class UpdateProjectReqDto {
   @IsString()
@@ -26,7 +26,13 @@ export class UpdateProjectReqDto {
   @IsUrl()
   privacyURL: string;
 
-  @IsString()
+  @IsArray()
+  @IsUrl({ require_tld: false, require_protocol: true }, { each: true })
   @IsOptional()
-  redirectURLs: string;
+  redirectURLs: string[];
+
+  @IsString()
+  @IsIn(['Active', 'Inactive'])
+  @IsOptional()
+  oAuthStatus: 'Active' | 'Inactive';
 }
