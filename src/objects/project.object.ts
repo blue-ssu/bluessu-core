@@ -9,6 +9,7 @@ export class ProjectObject {
   iconURL: string;
   termsURL?: string;
   privacyURL?: string;
+  redirectURLs?: string[];
   createdAt: string;
 
   static from(project: Project) {
@@ -21,6 +22,7 @@ export class ProjectObject {
     projectObject.iconURL = project.iconURL;
     projectObject.termsURL = project.termsURL;
     projectObject.privacyURL = project.privacyURL;
+    projectObject.redirectURLs = project.redirectURLList.split(',');
     projectObject.createdAt = new Date(project.createdAt).toISOString();
     return projectObject;
   }
