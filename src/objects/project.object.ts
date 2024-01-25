@@ -9,7 +9,10 @@ export class ProjectObject {
   iconURL: string;
   termsURL?: string;
   privacyURL?: string;
+  clientId?: string;
+  clientSecret?: string;
   redirectURLs?: string[];
+  oAuthStatus?: 'Active' | 'Inactive';
   createdAt: string;
 
   static from(project: Project) {
@@ -22,7 +25,12 @@ export class ProjectObject {
     projectObject.iconURL = project.iconURL;
     projectObject.termsURL = project.termsURL;
     projectObject.privacyURL = project.privacyURL;
-    projectObject.redirectURLs = project.redirectURLList.split(',');
+    projectObject.clientId = project.clientId;
+    projectObject.clientSecret = project.clientSecret;
+    projectObject.redirectURLs = (project.redirectURLList || '')
+      .split(',')
+      .filter((url) => url);
+    projectObject.oAuthStatus = project.oAuthStatus;
     projectObject.createdAt = new Date(project.createdAt).toISOString();
     return projectObject;
   }

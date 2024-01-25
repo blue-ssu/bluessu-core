@@ -35,13 +35,16 @@ export class Project extends BaseEntity {
   privacyURL: string;
 
   @Column({ name: 'client_id', nullable: true })
-  clientID: string;
+  clientId: string;
 
   @Column({ name: 'client_secret', nullable: true })
   clientSecret: string;
 
   @Column({ name: 'redirect_url_list', nullable: true })
   redirectURLList: string;
+
+  @Column({ name: 'oauth_status', default: 'Inactive' })
+  oAuthStatus: 'Active' | 'Inactive';
 
   get redirectURLs() {
     return this.redirectURLList.split(',').map((url) => url.trim());

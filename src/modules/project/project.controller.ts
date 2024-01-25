@@ -87,7 +87,30 @@ export class ProjectController {
       privacyURL: dto.privacyURL,
       termsURL: dto.termsURL,
       redirectURLs: dto.redirectURLs,
+      oAUthStatus: dto.oAuthStatus,
     });
+    return {
+      project: ProjectObject.from(project),
+    };
+  }
+
+  @Post(':projectId/client-secret')
+  @Role(['User', 'User:Admin'])
+  async generateClientSecret(
+    @Param('projectId') projectId: string,
+    @Client() client: ClientType,
+  ) {
+    if (client.type !== 'user') {
+      throw new InvalidClientType();
+    }
+    await this.projectService.checkClientHasPermission(
+      +projectId,
+      client,
+      'Owner',
+    );
+    const project = await this.projectService.generateProjectClientSecret(
+      +projectId,
+    );
     return {
       project: ProjectObject.from(project),
     };
