@@ -11,8 +11,8 @@ export class Project extends BaseEntity {
   @Column()
   description: string;
 
-  @Column()
-  uri: string;
+  @Column({ nullable: true })
+  url: string;
 
   @Column({ name: 'role_list', default: 'Project' })
   roleList: string;
@@ -21,7 +21,11 @@ export class Project extends BaseEntity {
     return this.roleList.split(',').map((role) => role.trim());
   }
 
-  @Column({ name: 'icon_url' })
+  @Column({
+    name: 'icon_url',
+    default:
+      'https://media.discordapp.net/attachments/1198637012169797662/1198642159763595315/Frame_123.png?ex=65bfa580&is=65ad3080&hm=9e99316cf9a1afe69e289c1e128d07486669bce11b38eed501bf871bb42c5649&=&format=webp&quality=lossless&width=921&height=921',
+  })
   iconURL: string;
 
   @Column({ name: 'terms_url', nullable: true })
@@ -30,7 +34,7 @@ export class Project extends BaseEntity {
   @Column({ name: 'privacy_url', nullable: true })
   privacyURL: string;
 
-  @Column({ name: 'client_id' })
+  @Column({ name: 'client_id', nullable: true })
   clientID: string;
 
   @Column({ name: 'client_secret', nullable: true })
@@ -48,13 +52,13 @@ export class Project extends BaseEntity {
   static create(data: {
     name: string;
     description: string;
-    uri: string;
+    url: string;
     iconURL: string;
   }) {
     const entity = new Project();
     entity.name = data.name;
     entity.description = data.description;
-    entity.uri = data.uri;
+    entity.url = data.url;
     entity.iconURL = data.iconURL;
     return entity;
   }

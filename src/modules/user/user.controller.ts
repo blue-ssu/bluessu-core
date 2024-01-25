@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -10,12 +9,12 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Role } from '../auth/decorators/Role.decorator';
-import { ClientType, ClientUser } from 'src/types/ClientType';
+import { ClientType } from 'src/types/ClientType';
 import { Client } from '../auth';
-import { InvalidClientType } from 'src/errors/InvalidClientType';
 import { CreateUserReqDto } from './dto/CreateUser.req.dto';
 import { UpdateUserReqDto } from './dto/UpdateUser.req.dto';
 import { SearchUserReqDto } from './dto/SearchUser.req.dto';
+import { UserObject } from 'src/objects/user.object';
 
 @Controller('users')
 export class UserController {
@@ -30,11 +29,13 @@ export class UserController {
   @Get('search')
   @Role(['User:Admin', 'Project:AuthService'])
   async searchUser(@Body() dto: SearchUserReqDto) {
-    return await this.userService.search({
+    const users = await this.userService.search({
       name: dto.name,
       studentId: dto.studentId,
-      profileImage: dto.profileImage,
     });
+    return {
+      users: UserObject.fromArray(users),
+    };
   }
 
   @Get(':userId')
@@ -43,19 +44,25 @@ export class UserController {
     @Param('userId') id: string | 'me',
     @Client() client: ClientType,
   ) {
-    const userId = this.getAndCheckUserId(id, client);
-    return await this.userService.findOne(userId);
+    const userId = this.userService.getAndCheckUserId(id, client);
+    const user = await this.userService.findOne(userId);
+    return {
+      user: UserObject.from(user),
+    };
   }
 
   @Post()
   @Role(['User:Admin'])
   async createUser(@Body() dto: CreateUserReqDto) {
-    return await this.userService.create({
+    const user = await this.userService.create({
       name: dto.name,
       studentId: dto.studentId,
       department: dto.department,
       profileImage: dto.profileImage,
     });
+    return {
+      user: UserObject.from(user),
+    };
   }
 
   @Patch(':userId')
@@ -65,8 +72,11 @@ export class UserController {
     @Body() dto: UpdateUserReqDto,
     @Client() client: ClientType,
   ) {
-    const userId = this.getAndCheckUserId(id, client);
-    return await this.userService.update(userId, dto);
+    const userId = this.userService.getAndCheckUserId(id, client);
+    const user = await this.userService.update(userId, dto);
+    return {
+      user: UserObject.from(user),
+    };
   }
 
   @Delete(':userId')
@@ -75,26 +85,7 @@ export class UserController {
     @Param('userId') id: string | 'me',
     @Client() client: ClientType,
   ) {
-    const userId = this.getAndCheckUserId(id, client);
-    return await this.userService.delete(userId);
-  }
-
-  private getAndCheckUserId(id: string, client: ClientType) {
-    if (id === 'me' && client.type === 'project') {
-      throw new InvalidClientType();
-    }
-    const userId = id === 'me' ? (client as ClientUser).user.id : +id;
-
-    if (
-      client.type === 'user' &&
-      !client.user.roles.includes('User:Admin') &&
-      client.user.id !== userId
-    ) {
-      throw new BadRequestException({
-        code: 'invalid_user',
-      });
-    }
-
-    return userId;
+    const userId = this.userService.getAndCheckUserId(id, client);
+    await this.userService.delete(userId);
   }
 }

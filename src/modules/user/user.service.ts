@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { UserNotFoundException } from 'src/errors';
+import { InvalidClientType } from 'src/errors/InvalidClientType';
+import { ClientType, ClientUser } from 'src/types/ClientType';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -40,22 +42,17 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  async search(query: {
-    name?: string;
-    studentId?: string;
-    profileImage?: string;
-  }): Promise<User[]> {
+  async search(query: { name?: string; studentId?: string }): Promise<User[]> {
     return await this.userRepository.find({
       where: {
         name: query.name,
         studentId: query.studentId,
-        profileImage: query.profileImage,
       },
     });
   }
 
-  async update(id: number, data: { profileImage?: string }): Promise<void> {
-    const user = await this.userRepository.findOne({ where: { id } });
+  async update(id: number, data: { profileImage?: string }): Promise<User> {
+    let user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
       throw new UserNotFoundException();
     }
@@ -65,6 +62,8 @@ export class UserService {
         profileImage: data.profileImage,
       },
     );
+    user = await this.userRepository.findOne({ where: { id } });
+    return user;
   }
 
   async delete(id: number): Promise<void> {
@@ -73,5 +72,24 @@ export class UserService {
       throw new UserNotFoundException();
     }
     await this.userRepository.softDelete({ id });
+  }
+
+  getAndCheckUserId(id: string, client: ClientType) {
+    if (id === 'me' && client.type === 'project') {
+      throw new InvalidClientType();
+    }
+    const userId = id === 'me' ? (client as ClientUser).user.id : +id;
+
+    if (
+      client.type === 'user' &&
+      !client.user.roles.includes('User:Admin') &&
+      client.user.id !== userId
+    ) {
+      throw new BadRequestException({
+        code: 'invalid_user',
+      });
+    }
+
+    return userId;
   }
 }
