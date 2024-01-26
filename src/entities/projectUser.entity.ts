@@ -1,7 +1,8 @@
-import { Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { User } from './user.entity';
 import { Project } from './project.entity';
 import { BaseEntity } from './base.entity';
+import { ProjectUserToken } from './projectUserToken.entity';
 
 @Entity('project_user')
 export class ProjectUser extends BaseEntity {
@@ -12,6 +13,12 @@ export class ProjectUser extends BaseEntity {
   @ManyToOne(() => User, (user) => user.projectUsers)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(
+    () => ProjectUserToken,
+    (projectUserToken) => projectUserToken.projectUser,
+  )
+  projectUserTokens: ProjectUserToken[];
 
   static create(data: { project: Project; user: User }) {
     const entity = new ProjectUser();
