@@ -101,7 +101,7 @@ export class OAuthTokenService {
         };
       }
 
-      if (decoded.sub !== 'oauthUser') {
+      if (decoded.sub !== 'oauthUserAccess') {
         return {
           isValid: false,
         };

@@ -47,7 +47,7 @@ export class Project extends BaseEntity {
   oAuthStatus: 'Active' | 'Inactive';
 
   get redirectURLs() {
-    return this.redirectURLList.split(',').map((url) => url.trim());
+    return (this.redirectURLList || '').split(',').map((url) => url.trim());
   }
 
   @OneToMany(() => ProjectMember, (projectMember) => projectMember.project)

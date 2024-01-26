@@ -99,7 +99,7 @@ export class OAuthService {
       });
     }
 
-    const decoded = this.oAuthTokenService.verifyAccessToken(code);
+    const decoded = this.oAuthTokenService.verifyGenerateToken(code);
     if (!decoded.isValid) {
       throw new BadRequestException({
         code: 'invalid_token',

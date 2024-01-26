@@ -69,6 +69,8 @@ export class OAuthController {
   @Get('profile')
   async oauthProfile(@Headers('Authorization') accessToken: string) {
     const res = await this.oauthService.getProfile(accessToken.split(' ')?.[1]);
-    return res;
+    return {
+      user: res,
+    };
   }
 }
